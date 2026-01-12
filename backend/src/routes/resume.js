@@ -4,6 +4,8 @@ const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, 'uploads/'),
@@ -34,6 +36,27 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ error: 'Failed to parse resume' });
+    }
+});
+
+router.get('/fetch-website', async (req, res) => {
+    const url = 'https://www.manuelpalli.com/';
+    try {
+        const { data } = await axios.get(url);
+        const $ = cheerio.load(data);
+        
+        // Simple extraction: get all text from body
+        // Better: target specific sections if possible
+        const text = $('body').text().replace(/\s\s+/g, ' ').trim();
+
+        res.json({
+            message: 'Information fetched from website successfully',
+            url: url,
+            extractedText: text
+        });
+    } catch (error) {
+        console.error('Fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch information from website' });
     }
 });
 

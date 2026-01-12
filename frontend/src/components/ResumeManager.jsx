@@ -29,6 +29,20 @@ const ResumeManager = () => {
         }
     };
 
+    const handleSyncWebsite = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('http://localhost:5000/api/resume/fetch-website');
+            setResumeText(response.data.extractedText);
+            alert('Information synced from manuelpalli.com!');
+        } catch (error) {
+            console.error('Sync failed', error);
+            alert('Failed to sync from website.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleTailor = async () => {
         setLoading(true);
         try {
@@ -48,10 +62,19 @@ const ResumeManager = () => {
         <Box>
             <Paper sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h6" gutterBottom>Resume Management</Typography>
-                <input type="file" onChange={handleFileChange} />
-                <Button variant="contained" onClick={handleUpload} sx={{ ml: 2 }} disabled={loading || !file}>
-                    {loading ? <CircularProgress size={24} /> : 'Upload & Parse'}
-                </Button>
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>Option 1: Upload PDF</Typography>
+                    <input type="file" onChange={handleFileChange} />
+                    <Button variant="contained" onClick={handleUpload} sx={{ ml: 2 }} disabled={loading || !file}>
+                        {loading ? <CircularProgress size={24} /> : 'Upload & Parse'}
+                    </Button>
+                </Box>
+                <Box>
+                    <Typography variant="subtitle2" gutterBottom>Option 2: Sync from manuelpalli.com</Typography>
+                    <Button variant="outlined" onClick={handleSyncWebsite} disabled={loading}>
+                        {loading ? <CircularProgress size={24} /> : 'Sync from Website'}
+                    </Button>
+                </Box>
             </Paper>
 
             {resumeText && (
