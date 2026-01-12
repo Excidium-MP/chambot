@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, List, ListItem, ListItemText, Paper, CircularProgress } from '@mui/material';
-import axios from 'axios';
+import api from '../api';
 
 const JobSearch = () => {
     const [keywords, setKeywords] = useState('');
@@ -11,7 +11,7 @@ const JobSearch = () => {
     const handleSearch = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:5000/api/jobs/search`, {
+            const response = await api.get(`/jobs/search`, {
                 params: { keywords, location }
             });
             setJobs(response.data);

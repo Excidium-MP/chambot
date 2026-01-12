@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Paper, TextField, CircularProgress } from '@mui/material';
-import axios from 'axios';
+import api from '../api';
 
 const ResumeManager = () => {
     const [file, setFile] = useState(null);
@@ -19,7 +19,7 @@ const ResumeManager = () => {
         formData.append('resume', file);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/resume/upload', formData);
+            const response = await api.post('/resume/upload', formData);
             setResumeText(response.data.extractedText);
             alert('Upload successful!');
         } catch (error) {
@@ -32,7 +32,7 @@ const ResumeManager = () => {
     const handleSyncWebsite = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:5000/api/resume/fetch-website');
+            const response = await api.get('/resume/fetch-website');
             setResumeText(response.data.extractedText);
             alert('Information synced from manuelpalli.com!');
         } catch (error) {
@@ -46,7 +46,7 @@ const ResumeManager = () => {
     const handleTailor = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/ai/tailor-resume', {
+            const response = await api.post('/ai/tailor-resume', {
                 resumeText,
                 jobDescription: 'Seeking a Full Stack Developer with React and Node.js experience.'
             });
